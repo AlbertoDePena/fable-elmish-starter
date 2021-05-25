@@ -1,0 +1,12 @@
+node_modules
+obj
+bin
+dist
+paket-files
+
+*.fs.js
+package-lock.json
+
+.fable
+.cache
+.paket
