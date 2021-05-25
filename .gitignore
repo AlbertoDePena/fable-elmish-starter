@@ -11,3 +11,5 @@ src/tailwind.css
 .fable
 .cache
 .paket
+.fake
+.ionide
