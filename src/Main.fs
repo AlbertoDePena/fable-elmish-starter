@@ -12,15 +12,15 @@ type Msg =
     | Decrement
 
 let init() =
-    { Count = 0 }
+    { Count = 0 }, Cmd.none
 
-let update (msg: Msg) (state: State): State =
+let update (msg: Msg) (state: State) =
     match msg with
     | Increment ->
-        { state with Count = state.Count + 1 }
+        { state with Count = state.Count + 1 }, Cmd.none
 
     | Decrement ->
-        { state with Count = state.Count - 1 }
+        { state with Count = state.Count - 1 }, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
   Html.div [
@@ -37,6 +37,6 @@ let render (state: State) (dispatch: Msg -> unit) =
     Html.h1 state.Count
   ]
 
-Program.mkSimple init update render
+Program.mkProgram init update render
 |> Program.withReactSynchronous "elmish-app"
 |> Program.run
