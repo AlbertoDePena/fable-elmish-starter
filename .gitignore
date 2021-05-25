@@ -6,6 +6,7 @@ paket-files
 
 *.fs.js
 package-lock.json
+src/tailwind.css
 
 .fable
 .cache
