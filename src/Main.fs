@@ -24,19 +24,25 @@ let update (msg: Msg) (state: State) =
 
 let render (state: State) (dispatch: Msg -> unit) =
   Html.div [
-    Html.button [
-      prop.onClick (fun _ -> dispatch Increment)
-      prop.text "Increment"
-    ]
+    prop.classes [ tailwind.container; tailwind.``mx-auto``; tailwind.``py-4``; tailwind.``px-4`` ]
+    prop.children [
+      Html.button [
+        prop.classes [ tailwind.``border``; tailwind.``border-blue-600``; tailwind.``text-gray-200``; tailwind.rounded; tailwind.``px-5``; tailwind.``py-5``; tailwind.``mx-2``; tailwind.``bg-blue-500`` ]
+        prop.onClick (fun _ -> dispatch Increment)
+        prop.text "Increment"
+      ]
 
-    Html.button [
-      prop.onClick (fun _ -> dispatch Decrement)
-      prop.text "Decrement"
-    ]
+      Html.button [
+        prop.classes [ tailwind.``border``; tailwind.``border-blue-600``; tailwind.``text-gray-200``; tailwind.rounded; tailwind.``px-5``; tailwind.``py-5``; tailwind.``mx-2``; tailwind.``bg-blue-500`` ]
+        prop.onClick (fun _ -> dispatch Decrement)
+        prop.text "Decrement"
+      ]
 
-    Html.h1 state.Count
+      Html.h1 state.Count
+    ]    
   ]
 
 Program.mkProgram init update render
 |> Program.withReactSynchronous "elmish-app"
+|> Program.withConsoleTrace
 |> Program.run
