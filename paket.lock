@@ -46,5 +46,3 @@ NUGET
       Fable.AST (>= 3.0)
       FSharp.Core (>= 4.7.2)
     FSharp.Core (5.0.1)
-    Zanaptak.TypedCssClasses (0.4)
-      FSharp.Core (>= 4.3.4)

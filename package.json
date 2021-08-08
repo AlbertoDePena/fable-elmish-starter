@@ -3,8 +3,8 @@
   "name": "fable-elmish-starter",
   "version": "1.0.0",
   "scripts": {
-    "build:css:dev": "cross-env NODE_ENV=development npx tailwindcss-cli@latest build ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
-    "build:css:prod": "cross-env NODE_ENV=production npx tailwindcss-cli@latest build ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
+    "build:css:dev": "cross-env NODE_ENV=development npx tailwindcss-cli@latest -i ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
+    "build:css:prod": "cross-env NODE_ENV=production npx tailwindcss-cli@latest -i ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
     "start": "fable watch src --run parcel src/index.html",
     "build": "fable src --run parcel build src/index.html"
   },

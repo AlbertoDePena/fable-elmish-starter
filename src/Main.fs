@@ -24,16 +24,16 @@ let update (msg: Msg) (state: State) =
 
 let render (state: State) (dispatch: Msg -> unit) =
   Html.div [
-    prop.classes [ tailwind.container; tailwind.``mx-auto``; tailwind.``py-4``; tailwind.``px-4`` ]
+    prop.classes [ "container"; "mx-auto"; "py-4"; "px-4" ]
     prop.children [
       Html.button [
-        prop.classes [ tailwind.``border``; tailwind.``border-blue-600``; tailwind.``text-gray-200``; tailwind.rounded; tailwind.``px-5``; tailwind.``py-5``; tailwind.``mx-2``; tailwind.``bg-blue-500`` ]
+        prop.classes [ "border"; "border-blue-600"; "text-gray-200"; "rounded"; "px-5"; "py-5"; "mx-2"; "bg-blue-500" ]
         prop.onClick (fun _ -> dispatch Increment)
         prop.text "Increment"
       ]
 
       Html.button [
-        prop.classes [ tailwind.``border``; tailwind.``border-blue-600``; tailwind.``text-gray-200``; tailwind.rounded; tailwind.``px-5``; tailwind.``py-5``; tailwind.``mx-2``; tailwind.``bg-blue-500`` ]
+        prop.classes [ "border"; "border-blue-600"; "text-gray-200"; "rounded"; "px-5"; "py-5"; "mx-2"; "bg-blue-500" ]
         prop.onClick (fun _ -> dispatch Decrement)
         prop.text "Decrement"
       ]
