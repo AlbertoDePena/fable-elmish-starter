@@ -22,20 +22,24 @@ let render (state: State) (dispatch: Msg -> unit) =
     let buttonStyle =
         "border border-blue-600 text-gray-200 rounded px-5 py-5 mx-2 bg-blue-500"
 
-    Html.div
-        [ prop.className "container mx-auto py-4 px-4"
-          prop.children
-              [ Html.button
-                  [ prop.className buttonStyle
-                    prop.onClick (fun _ -> dispatch Increment)
-                    prop.text "Increment" ]
+    Html.div [
+        prop.className "container mx-auto py-4 px-4"
+        prop.children [
+            Html.button [
+                prop.className buttonStyle
+                prop.onClick (fun _ -> dispatch Increment)
+                prop.text "Increment"
+            ]
 
-                Html.button
-                    [ prop.className buttonStyle
-                      prop.onClick (fun _ -> dispatch Decrement)
-                      prop.text "Decrement" ]
+            Html.button [
+                prop.className buttonStyle
+                prop.onClick (fun _ -> dispatch Decrement)
+                prop.text "Decrement"
+            ]
 
-                Html.h1 state.Count ] ]
+            Html.h1 state.Count
+        ]
+    ]
 
 Program.mkProgram init update render
 |> Program.withReactSynchronous "elmish-app"

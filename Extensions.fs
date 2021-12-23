@@ -10,9 +10,9 @@ type Deferred<'t> =
     | Resolved of 't
 
 /// Describes the status of message (msg)
-type MsgStatus<'t> =
-    | Dispatched
-    | Handled of 't     
+type AsyncOperationStatus<'t> =
+    | Started
+    | Finished of 't     
 
 [<RequireQualifiedAccess>]
 module Cmd =
@@ -31,19 +31,11 @@ module Cmd =
 [<RequireQualifiedAccess>]
 module Async =
 
-    let singleton x = async {
-        return x
-    }
+    let inline singleton value = async.Return value
 
-    let map f (computation: Async<'t>) = async {
-        let! x = computation
-        return f x
-    }
+    let inline bind f x = async.Bind(x, f)
 
-    let bind f (computation: Async<'t>) = async {
-        let! x = computation
-        return! f x
-    }
+    let inline map f x = x |> bind (f >> singleton)
 
 [<RequireQualifiedAccess>]
 module Deferred =
@@ -79,3 +71,31 @@ module Deferred =
         | HasNotStartedYet -> HasNotStartedYet
         | InProgress -> InProgress
         | Resolved value -> transform value
+
+    /// Applies the given function when the type is in the `Resolved` case
+    let iter (action: 'T -> unit) (deferred: Deferred<'T>) : unit =
+        match deferred with
+        | HasNotStartedYet -> ()
+        | InProgress -> ()
+        | Resolved value -> (action value)
+
+[<RequireQualifiedAccess>]
+module Config =
+    open Fable.Core
+
+    [<Emit("process.env.API_BASE_ADDRESS ? process.env.API_BASE_ADDRESS : ''")>]
+    let GetApiBaseAddress () : string = jsNative
+
+[<RequireQualifiedAccess>]
+module Image =
+    open Fable.Core.JsInterop
+
+    let inline load (relativePath: string) : string = importDefault relativePath
+
+[<RequireQualifiedAccess>]
+module Strings =
+
+    let toPascalCase (value: string) =
+        let letter = value.[0].ToString().ToUpper()
+        let pascalCased = letter + value.Substring(1)
+        pascalCased        

@@ -5,11 +5,13 @@ dist
 paket-files
 
 *.fs.js
+*.fs.js.map
 package-lock.json
-src/tailwind.css
 
 .fable
 .cache
+.parcel-cache
 .paket
 .fake
 .ionide
+.env

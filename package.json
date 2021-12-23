@@ -1,19 +1,19 @@
 {
   "private": true,
   "name": "fable-elmish-starter",
-  "version": "1.0.0",
   "scripts": {
-    "build:css:dev": "cross-env NODE_ENV=development npx tailwindcss-cli@latest -i ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
-    "build:css:prod": "cross-env NODE_ENV=production npx tailwindcss-cli@latest -i ./tailwind.css -c ./tailwind.config.js -o ./src/tailwind.css",
-    "start": "fable watch src --run parcel src/index.html",
-    "build": "fable src --run parcel build src/index.html"
+    "start": "fable watch ./ --run parcel index.html",
+    "build": "fable ./ --run parcel build index.html"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "parcel-bundler": "^1.12.5"
+    "autoprefixer": "^10.4.0",
+    "parcel": "^2.0.1",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.7"
   }
 }
