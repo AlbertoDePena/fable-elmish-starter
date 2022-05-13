@@ -1,12 +1,11 @@
-node_modules
 obj
 bin
 dist
+node_modules
 paket-files
 
 *.fs.js
 *.fs.js.map
-package-lock.json
 
 .fable
 .cache
