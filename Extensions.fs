@@ -3,7 +3,7 @@ module Extensions
 
 open Elmish
 
-type AsyncOperationStatus<'a> =
+type MsgEvent<'a> =
     | Started
     | Finished of 'a
 
@@ -14,13 +14,13 @@ type Deferred<'a> =
 
 [<RequireQualifiedAccess>]
 module Deferred =
-    
+
     let map (transform: 'a -> 'b) (deferred: Deferred<'a>) : Deferred<'b> =
         match deferred with
         | HasNotStartedYet -> HasNotStartedYet
         | InProgress -> InProgress
-        | Resolved value -> Resolved (transform value)
-    
+        | Resolved value -> Resolved(transform value)
+
     let bind (transform: 'a -> Deferred<'b>) (deferred: Deferred<'a>) : Deferred<'b> =
         match deferred with
         | HasNotStartedYet -> HasNotStartedYet
@@ -33,27 +33,28 @@ module Deferred =
         | InProgress -> ()
         | Resolved value -> action value
 
-    let resolved deferred =
+    let resolved deferred : bool =
         match deferred with
         | HasNotStartedYet -> false
         | InProgress -> false
         | Resolved _ -> true
-    
-    let exists (predicate: 'a -> bool) deferred = 
+
+    let exists (predicate: 'a -> bool) deferred : bool =
         match deferred with
         | HasNotStartedYet -> false
         | InProgress -> false
-        | Resolved value -> predicate value 
+        | Resolved value -> predicate value
 
 [<RequireQualifiedAccess>]
 module Cmd =
-   
+
     let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
         let delayedCmd (dispatch: 'msg -> unit) : unit =
-            let delayedDispatch = async {
-                let! msg = operation
-                dispatch msg
-            }
+            let delayedDispatch =
+                async {
+                    let! msg = operation
+                    dispatch msg
+                }
 
             Async.StartImmediate delayedDispatch
 
@@ -62,11 +63,22 @@ module Cmd =
 [<RequireQualifiedAccess>]
 module Async =
 
-    let inline singleton value = async.Return value
+    let singleton x = 
+        async { 
+            return x 
+        }
 
-    let inline bind f x = async.Bind(x, f)
+    let map f x =
+        async {
+            let! y = x
+            return f y
+        }
 
-    let inline map f x = x |> bind (f >> singleton)               
+    let bind f x =
+        async {
+            let! y = x
+            return! f y
+        }
 
 [<RequireQualifiedAccess>]
 module Config =
@@ -94,4 +106,4 @@ module Strings =
     let toPascalCase (value: string) =
         let letter = value.[0].ToString().ToUpper()
         let pascalCased = letter + value.Substring(1)
-        pascalCased        
+        pascalCased
