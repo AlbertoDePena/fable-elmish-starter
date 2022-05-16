@@ -3,7 +3,7 @@ module Extensions
 
 open Elmish
 
-type MsgEvent<'a> =
+type AsyncMsg<'a> =
     | Started
     | Finished of 'a
 
