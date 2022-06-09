@@ -11,12 +11,12 @@ type State =
 type Msg =
     | Increment
     | Decrement
-    | GenerateRandomNumber of MsgEvent<double>
+    | GenerateRandomNumber of AsyncMsg<double>
 
 let random = System.Random()
 
 let init () =
-    { Count = 0; Random = HasNotStartedYet }, Cmd.none
+    { Count = 0; Random = Deferred.HasNotStartedYet }, Cmd.none
 
 let update (msg: Msg) (state: State) =
     match msg with
@@ -24,17 +24,20 @@ let update (msg: Msg) (state: State) =
 
     | Decrement -> { state with Count = state.Count - 1 }, Cmd.none
 
-    | GenerateRandomNumber Started ->
-        let generateRandom =
+    | GenerateRandomNumber AsyncMsg.Started ->
+        let generateRandom () =
             async {
                 do! Async.Sleep 1000
                 let randomNumber = random.NextDouble()
-                return GenerateRandomNumber(Finished randomNumber)
+                return randomNumber
             }
 
-        { state with Random = InProgress }, Cmd.fromAsync generateRandom
+        let command =
+            Cmd.OfAsyncImmediate.perform generateRandom () (AsyncMsg.Finished >> GenerateRandomNumber)
 
-    | GenerateRandomNumber (Finished randomNumber) -> { state with Random = Resolved randomNumber }, Cmd.none
+        { state with Random = Deferred.InProgress }, command
+
+    | GenerateRandomNumber (AsyncMsg.Finished randomNumber) -> { state with Random = Deferred.Resolved randomNumber }, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
     let buttonStyle =
@@ -57,16 +60,16 @@ let render (state: State) (dispatch: Msg -> unit) =
 
             Html.button [
                 prop.className buttonStyle
-                prop.onClick (fun _ -> dispatch (GenerateRandomNumber Started))
+                prop.onClick (fun _ -> dispatch (GenerateRandomNumber AsyncMsg.Started))
                 prop.text "Random Number"
             ]
 
             Html.h1 state.Count
 
             match state.Random with
-            | HasNotStartedYet -> Html.none
-            | InProgress -> Html.h1 "Please wait..."
-            | Resolved randomNumber -> Html.h1 randomNumber
+            | Deferred.HasNotStartedYet -> Html.none
+            | Deferred.InProgress -> Html.h1 "Please wait..."
+            | Deferred.Resolved randomNumber -> Html.h1 randomNumber
         ]
     ]
 
@@ -74,5 +77,6 @@ Program.mkProgram init update render
 |> Program.withReactSynchronous "elmish-app"
 #if DEBUG
 |> Program.withTrace Tracers.console
+|> Program.withConsoleTrace
 #endif
 |> Program.run

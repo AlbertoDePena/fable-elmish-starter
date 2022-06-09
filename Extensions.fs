@@ -1,12 +1,12 @@
 [<AutoOpen>]
 module Extensions
 
-open Elmish
-
+[<RequireQualifiedAccess>]
 type AsyncMsg<'a> =
     | Started
     | Finished of 'a
 
+[<RequireQualifiedAccess>]
 type Deferred<'a> =
     | HasNotStartedYet
     | InProgress
@@ -17,48 +17,33 @@ module Deferred =
 
     let map (transform: 'a -> 'b) (deferred: Deferred<'a>) : Deferred<'b> =
         match deferred with
-        | HasNotStartedYet -> HasNotStartedYet
-        | InProgress -> InProgress
-        | Resolved value -> Resolved(transform value)
+        | Deferred.HasNotStartedYet -> Deferred.HasNotStartedYet
+        | Deferred.InProgress -> Deferred.InProgress
+        | Deferred.Resolved value -> Deferred.Resolved(transform value)
 
     let bind (transform: 'a -> Deferred<'b>) (deferred: Deferred<'a>) : Deferred<'b> =
         match deferred with
-        | HasNotStartedYet -> HasNotStartedYet
-        | InProgress -> InProgress
-        | Resolved value -> transform value
+        | Deferred.HasNotStartedYet -> Deferred.HasNotStartedYet
+        | Deferred.InProgress -> Deferred.InProgress
+        | Deferred.Resolved value -> transform value
 
     let iter (action: 'a -> unit) (deferred: Deferred<'a>) : unit =
         match deferred with
-        | HasNotStartedYet -> ()
-        | InProgress -> ()
-        | Resolved value -> action value
+        | Deferred.HasNotStartedYet -> ()
+        | Deferred.InProgress -> ()
+        | Deferred.Resolved value -> action value
 
     let resolved deferred : bool =
         match deferred with
-        | HasNotStartedYet -> false
-        | InProgress -> false
-        | Resolved _ -> true
+        | Deferred.HasNotStartedYet -> false
+        | Deferred.InProgress -> false
+        | Deferred.Resolved _ -> true
 
     let exists (predicate: 'a -> bool) deferred : bool =
         match deferred with
-        | HasNotStartedYet -> false
-        | InProgress -> false
-        | Resolved value -> predicate value
-
-[<RequireQualifiedAccess>]
-module Cmd =
-
-    let fromAsync (operation: Async<'msg>) : Cmd<'msg> =
-        let delayedCmd (dispatch: 'msg -> unit) : unit =
-            let delayedDispatch =
-                async {
-                    let! msg = operation
-                    dispatch msg
-                }
-
-            Async.StartImmediate delayedDispatch
-
-        Cmd.ofSub delayedCmd
+        | Deferred.HasNotStartedYet -> false
+        | Deferred.InProgress -> false
+        | Deferred.Resolved value -> predicate value
 
 [<RequireQualifiedAccess>]
 module Async =
@@ -88,17 +73,10 @@ module Config =
     let GetApiBaseAddress () : string = jsNative
 
 [<RequireQualifiedAccess>]
-module Image =
+module StaticFile =
     open Fable.Core.JsInterop
 
-    let inline load (relativePath: string) : string = importDefault relativePath
-
-[<RequireQualifiedAccess>]
-module Window =
-    open Fable.Core
-
-    [<Emit("encodeURIComponent($0)")>]
-    let encodeURIComponent (value: string) : string = jsNative
+    let inline import (relativePath: string) : string = importDefault relativePath
 
 [<RequireQualifiedAccess>]
 module Strings =
