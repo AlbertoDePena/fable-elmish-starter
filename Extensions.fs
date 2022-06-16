@@ -46,26 +46,6 @@ module Deferred =
         | Deferred.Resolved value -> predicate value
 
 [<RequireQualifiedAccess>]
-module Async =
-
-    let singleton x = 
-        async { 
-            return x 
-        }
-
-    let map f x =
-        async {
-            let! y = x
-            return f y
-        }
-
-    let bind f x =
-        async {
-            let! y = x
-            return! f y
-        }
-
-[<RequireQualifiedAccess>]
 module Config =
     open Fable.Core
 

@@ -4,3 +4,4 @@ storage: none
 framework: netstandard2.0
 nuget Fable.Elmish.React
 nuget Feliz
+nuget FsToolkit.ErrorHandling
