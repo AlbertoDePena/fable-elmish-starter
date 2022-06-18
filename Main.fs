@@ -16,7 +16,9 @@ type Msg =
 let random = System.Random()
 
 let init () =
-    { Count = 0; Random = Deferred.HasNotStartedYet }, Cmd.none
+    { Count = 0
+      Random = Deferred.HasNotStartedYet },
+    Cmd.none
 
 let update (msg: Msg) (state: State) =
     match msg with
@@ -37,39 +39,75 @@ let update (msg: Msg) (state: State) =
 
         { state with Random = Deferred.InProgress }, command
 
-    | GenerateRandomNumber (AsyncMsg.Finished randomNumber) -> { state with Random = Deferred.Resolved randomNumber }, Cmd.none
+    | GenerateRandomNumber (AsyncMsg.Finished randomNumber) ->
+        { state with Random = Deferred.Resolved randomNumber }, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
-    let buttonStyle =
-        "border border-blue-600 text-gray-200 rounded px-5 py-5 mx-2 bg-blue-500"
-
     Html.div [
-        prop.className "container mx-auto py-4 px-4"
+        prop.className "container mx-auto my-6 box"
         prop.children [
-            Html.button [
-                prop.className buttonStyle
-                prop.onClick (fun _ -> dispatch Increment)
-                prop.text "Increment"
+            Html.div [
+                prop.classes [ "block" ]
+                prop.children [
+                    Html.button [
+                        prop.classes [
+                            "button"
+                            "is-small"
+                            "m-1"
+                        ]
+                        prop.onClick (fun _ -> dispatch Increment)
+                        prop.text "Increment"
+                    ]
+
+                    Html.button [
+                        prop.classes [
+                            "button"
+                            "is-small"
+                            "m-1"
+                        ]
+                        prop.onClick (fun _ -> dispatch Decrement)
+                        prop.text "Decrement"
+                    ]
+
+                    Html.button [
+                        prop.classes [
+                            "button"
+                            "is-small"
+                            "m-1"
+                            if state.Random = Deferred.InProgress then
+                                "is-loading"
+                        ]
+                        prop.onClick (fun _ -> dispatch (GenerateRandomNumber AsyncMsg.Started))
+                        prop.text "Random Number"
+                    ]
+                ]
             ]
 
-            Html.button [
-                prop.className buttonStyle
-                prop.onClick (fun _ -> dispatch Decrement)
-                prop.text "Decrement"
+            Html.div [
+                prop.classes [ "block" ]
+                prop.children [ Html.h1 state.Count ]
             ]
 
-            Html.button [
-                prop.className buttonStyle
-                prop.onClick (fun _ -> dispatch (GenerateRandomNumber AsyncMsg.Started))
-                prop.text "Random Number"
+            Html.div [
+                prop.classes [ "block" ]
+                prop.children [
+                    match state.Random with
+                    | Deferred.HasNotStartedYet -> Html.none
+                    | Deferred.InProgress -> Html.h1 "Please wait..."
+                    | Deferred.Resolved randomNumber -> Html.h1 randomNumber
+                ]
             ]
 
-            Html.h1 state.Count
-
-            match state.Random with
-            | Deferred.HasNotStartedYet -> Html.none
-            | Deferred.InProgress -> Html.h1 "Please wait..."
-            | Deferred.Resolved randomNumber -> Html.h1 randomNumber
+            Html.div [
+                prop.classes [ "block" ]
+                prop.children [
+                    Html.input [
+                        prop.classes [ "input"; "is-small" ]
+                        prop.type'.text
+                        prop.placeholder "Just an input..."
+                    ]
+                ]
+            ]
         ]
     ]
 
