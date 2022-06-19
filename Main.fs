@@ -55,6 +55,7 @@ let render (state: State) (dispatch: Msg -> unit) =
                             "is-small"
                             "m-1"
                         ]
+                        prop.type'.button
                         prop.onClick (fun _ -> dispatch Increment)
                         prop.text "Increment"
                     ]
@@ -65,6 +66,7 @@ let render (state: State) (dispatch: Msg -> unit) =
                             "is-small"
                             "m-1"
                         ]
+                        prop.type'.button
                         prop.onClick (fun _ -> dispatch Decrement)
                         prop.text "Decrement"
                     ]
@@ -77,6 +79,7 @@ let render (state: State) (dispatch: Msg -> unit) =
                             if state.Random = Deferred.InProgress then
                                 "is-loading"
                         ]
+                        prop.type'.button
                         prop.onClick (fun _ -> dispatch (GenerateRandomNumber AsyncMsg.Started))
                         prop.text "Random Number"
                     ]

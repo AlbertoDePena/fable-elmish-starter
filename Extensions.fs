@@ -62,6 +62,7 @@ module StaticFile =
 module Strings =
 
     let toPascalCase (value: string) =
-        let letter = value.[0].ToString().ToUpper()
+        let character = value.[0]
+        let letter = character.ToString().ToUpper()
         let pascalCased = letter + value.Substring(1)
         pascalCased
