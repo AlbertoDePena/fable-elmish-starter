@@ -6,18 +6,18 @@ open Feliz
 
 type State =
     { Count: int
-      Random: Deferred<double> }
+      RandomDeferred: Deferred<double> }
 
 type Msg =
     | Increment
     | Decrement
-    | GenerateRandomNumber of AsyncMsg<double>
+    | GenerateRandomNumberAsync of AsyncMsg<double>
 
 let random = System.Random()
 
 let init () =
     { Count = 0
-      Random = Deferred.HasNotStartedYet },
+      RandomDeferred = Deferred.HasNotStartedYet },
     Cmd.none
 
 let update (msg: Msg) (state: State) =
@@ -26,7 +26,7 @@ let update (msg: Msg) (state: State) =
 
     | Decrement -> { state with Count = state.Count - 1 }, Cmd.none
 
-    | GenerateRandomNumber AsyncMsg.Started ->
+    | GenerateRandomNumberAsync AsyncMsg.Started ->
         let generateRandom () =
             async {
                 do! Async.Sleep 1000
@@ -35,12 +35,12 @@ let update (msg: Msg) (state: State) =
             }
 
         let command =
-            Cmd.OfAsyncImmediate.perform generateRandom () (AsyncMsg.Finished >> GenerateRandomNumber)
+            Cmd.OfAsyncImmediate.perform generateRandom () (AsyncMsg.Completed >> GenerateRandomNumberAsync)
 
-        { state with Random = Deferred.InProgress }, command
+        { state with RandomDeferred = Deferred.InProgress }, command
 
-    | GenerateRandomNumber (AsyncMsg.Finished randomNumber) ->
-        { state with Random = Deferred.Resolved randomNumber }, Cmd.none
+    | GenerateRandomNumberAsync (AsyncMsg.Completed randomNumber) ->
+        { state with RandomDeferred = Deferred.Resolved randomNumber }, Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
     Html.div [
@@ -76,11 +76,11 @@ let render (state: State) (dispatch: Msg -> unit) =
                             "button"
                             "is-small"
                             "m-1"
-                            if state.Random = Deferred.InProgress then
+                            if state.RandomDeferred = Deferred.InProgress then
                                 "is-loading"
                         ]
                         prop.type'.button
-                        prop.onClick (fun _ -> dispatch (GenerateRandomNumber AsyncMsg.Started))
+                        prop.onClick (fun _ -> dispatch (GenerateRandomNumberAsync AsyncMsg.Started))
                         prop.text "Random Number"
                     ]
                 ]
@@ -94,7 +94,7 @@ let render (state: State) (dispatch: Msg -> unit) =
             Html.div [
                 prop.classes [ "block" ]
                 prop.children [
-                    match state.Random with
+                    match state.RandomDeferred with
                     | Deferred.HasNotStartedYet -> Html.none
                     | Deferred.InProgress -> Html.h1 "Please wait..."
                     | Deferred.Resolved randomNumber -> Html.h1 randomNumber

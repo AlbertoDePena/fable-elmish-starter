@@ -4,7 +4,7 @@ module Extensions
 [<RequireQualifiedAccess>]
 type AsyncMsg<'a> =
     | Started
-    | Finished of 'a
+    | Completed of 'a
 
 [<RequireQualifiedAccess>]
 type Deferred<'a> =
