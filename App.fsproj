@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="Tracers.fs" />
     <Compile Include="Extensions.fs" />
+    <Compile Include="Application.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <Import Project=".paket\Paket.Restore.targets" />
