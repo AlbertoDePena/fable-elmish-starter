@@ -2,13 +2,25 @@
 module Application
 
 open Elmish
-open Elmish.React
 
 open Feliz
 
+[<RequireQualifiedAccess>]
+type Url =
+    | Home
+    | Blog of int
+
+[<RequireQualifiedAccess>]
+type Page =
+    | Home
+    | Blog of blogId: int
+    | NotFound
+
 type State =
     { Count: int
-      RandomDeferred: Deferred<double> }
+      RandomDeferred: Deferred<double>
+      CurrentPage : Page
+      CurrentUrl : Url option }
 
 type Msg =
     | Increment
@@ -17,10 +29,25 @@ type Msg =
 
 let random = System.Random()
 
-let init () =
-    { Count = 0
-      RandomDeferred = Deferred.HasNotStartedYet },
-    Cmd.none
+let updateUrl (urlOption: Url option) state =
+    let state = { state with CurrentUrl = urlOption }
+
+    match urlOption with
+    | None ->
+        { state with CurrentPage = Page.NotFound }, Cmd.none
+
+    | Some Url.Home ->        
+        { state with CurrentPage = Page.Home }, Cmd.none
+
+    | Some (Url.Blog blogId) ->        
+        { state with CurrentPage = Page.Blog blogId }, Cmd.none
+
+let init (urlOption : Url option) =
+    updateUrl urlOption
+        { Count = 0
+          RandomDeferred = Deferred.HasNotStartedYet
+          CurrentPage = Page.NotFound
+          CurrentUrl = None }    
 
 let update (msg: Msg) (state: State) =
     match msg with
@@ -117,6 +144,15 @@ let render (state: State) (dispatch: Msg -> unit) =
                         prop.placeholder "Just an input..."
                     ]
                 ]
+            ]
+
+            Html.p [
+                prop.text (
+                    match state.CurrentPage with
+                    | Page.Home -> "Home"
+                    | Page.Blog blogId -> $"Blog {blogId}"
+                    | Page.NotFound -> "Not Found"
+                )
             ]
         ]
     ]
