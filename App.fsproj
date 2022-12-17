@@ -6,8 +6,14 @@
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Tracers.fs" />
-    <Compile Include="Extensions.fs" />    
+    <Compile Include="paket-files\AlbertoDePena\9f11891c470fba4477739fd76f969e98\Fable.Tracers.fs">
+      <Paket>True</Paket>
+      <Link>Fable.Tracers.fs</Link>
+    </Compile>
+    <Compile Include="paket-files\AlbertoDePena\9f11891c470fba4477739fd76f969e98\Fable.Extensions.fs">
+      <Paket>True</Paket>
+      <Link>Fable.Extensions.fs</Link>
+    </Compile>
     <Compile Include="Application.fs" />
     <Compile Include="Router.fs" />
     <Compile Include="Main.fs" />

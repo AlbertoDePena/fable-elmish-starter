@@ -4,6 +4,7 @@ module Application
 open Elmish
 
 open Feliz
+open ADP.Fable.Extensions
 
 [<RequireQualifiedAccess>]
 type Url =

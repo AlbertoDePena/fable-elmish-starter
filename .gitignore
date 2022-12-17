@@ -2,6 +2,7 @@ obj
 bin
 dist
 node_modules
+fable_modules
 paket-files
 
 *.fs.js
