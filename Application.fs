@@ -43,10 +43,10 @@ let parseUrl: Parser<Url -> Url, Url> =
         map Url.Home top
     ]
 
-let updateUrl (urlOption: Url option) state =
-    let state = { state with CurrentUrl = urlOption }
+let updateUrl (url: Url option) state =
+    let state = { state with CurrentUrl = url }
 
-    match urlOption with
+    match state.CurrentUrl with
     | None ->
         { state with CurrentPage = Page.NotFound }, Cmd.none
 
@@ -56,8 +56,8 @@ let updateUrl (urlOption: Url option) state =
     | Some (Url.Blog blogId) ->        
         { state with CurrentPage = Page.Blog blogId }, Cmd.none
 
-let init (urlOption : Url option) =
-    updateUrl urlOption
+let init (url : Url option) =
+    updateUrl url
         { Count = 0
           RandomDeferred = Deferred.HasNotStartedYet
           CurrentPage = Page.NotFound
