@@ -2,6 +2,7 @@
 module Application
 
 open Elmish
+open Elmish.UrlParser
 
 open Feliz
 open ADP.Fable.Extensions
@@ -29,6 +30,18 @@ type Msg =
     | GenerateRandomNumberAsync of AsyncMsg<double>
 
 let random = System.Random()
+
+let toHash (url: Url) =
+    match url with
+    | Url.Home -> "#home"
+    | Url.Blog id -> $"#blog/{id}"
+
+let parseUrl: Parser<Url -> Url, Url> =
+    oneOf [ // Auth Routes
+        map (fun blogId -> Url.Blog blogId) (s "blog" </> i32)
+        map Url.Home (s "home")        
+        map Url.Home top
+    ]
 
 let updateUrl (urlOption: Url option) state =
     let state = { state with CurrentUrl = urlOption }
