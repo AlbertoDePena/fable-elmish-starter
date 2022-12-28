@@ -8,5 +8,4 @@ nuget Fable.Elmish.React
 nuget Feliz
 nuget FsToolkit.ErrorHandling
 
-gist AlbertoDePena/9f11891c470fba4477739fd76f969e98 Fable.Tracers.fs
 gist AlbertoDePena/9f11891c470fba4477739fd76f969e98 Fable.Extensions.fs
