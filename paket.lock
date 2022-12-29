@@ -55,6 +55,3 @@ NUGET
     FSharp.Core (7.0)
     FsToolkit.ErrorHandling (4.2.1)
       FSharp.Core (>= 4.7.2)
-GIST
-  remote: AlbertoDePena/9f11891c470fba4477739fd76f969e98
-    Fable.Extensions.fs (b977bd2b92d2f25a6494b39fe5df6ca9945acc71)

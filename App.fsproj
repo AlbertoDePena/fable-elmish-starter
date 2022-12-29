@@ -5,11 +5,8 @@
     <WarnOn>3390;$(WarnOn)</WarnOn>
     <WarningLevel>5</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="paket-files\AlbertoDePena\9f11891c470fba4477739fd76f969e98\Fable.Extensions.fs">
-      <Paket>True</Paket>
-      <Link>Fable.Extensions.fs</Link>
-    </Compile>
+  <ItemGroup>    
+    <Compile Include="Extensions.fs" />
     <Compile Include="Application.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
