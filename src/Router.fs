@@ -14,9 +14,19 @@ let toHash (route: Route) =
     | Route.Home -> "#home"
     | Route.Blog id -> sprintf "#blog/%i" id
 
+/// https://elmish.github.io/urlParser/docs/parsing.html
 let parseRoute: Parser<Route -> Route, Route> =
-    UrlParser.oneOf [ // Auth Routes
-        UrlParser.map (fun blogId -> Route.Blog blogId) (UrlParser.s "blog" </> UrlParser.i32)
-        UrlParser.map Route.Home (UrlParser.s "home")
-        UrlParser.map Route.Home UrlParser.top
+    // combinator that takes nothing
+    let matchNothing = UrlParser.top
+    // combinator for a static string we expect to find in the URL
+    let matchString = UrlParser.s
+    // combinator to extract a string
+    let parseString = UrlParser.str
+    // combinator to attempt to parse and Int32
+    let parseInt32 = UrlParser.i32
+
+    UrlParser.oneOf [
+        (matchString "blog" </> parseInt32) |> UrlParser.map (fun blogId -> Route.Blog blogId)
+        (matchString "home") |> UrlParser.map Route.Home
+        matchNothing |> UrlParser.map Route.Home
     ]
