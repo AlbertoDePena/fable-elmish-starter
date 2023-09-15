@@ -1,19 +1,6 @@
 # Fable Elmish Starter
 
-
 ### Setting up your development environment
-
-* Run `dotnet --list-sdks` to capture latest version 6 sdk
-* Create `global.json` file in fable-elmish-starter folder
-
-```json
-{
-    "sdk": {
-        "version": "enter latest version 6 sdk here",
-        "rollForward": "latestFeature"
-    }
-}
-```
 
 * Install `fable` dotnet tool
 
