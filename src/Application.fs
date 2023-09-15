@@ -34,7 +34,7 @@ let random = System.Random()
 let toHash (url: Url) =
     match url with
     | Url.Home -> "#home"
-    | Url.Blog id -> $"#blog/{id}"
+    | Url.Blog id -> sprintf "#blog/%i" id
 
 let parseUrl: Parser<Url -> Url, Url> =
     oneOf [ // Auth Routes
@@ -156,7 +156,7 @@ let render (state: State) (dispatch: Msg -> unit) =
                 prop.text (
                     match state.CurrentPage with
                     | Page.Home -> "Home"
-                    | Page.Blog blogId -> $"Blog {blogId}"
+                    | Page.Blog blogId -> sprintf "Blog %i" blogId
                     | Page.NotFound -> "Not Found"
                 )
             ]

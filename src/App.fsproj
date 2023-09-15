@@ -9,11 +9,17 @@
     <Compile Include="Extensions.fs" />
     <Compile Include="Application.fs" />
     <Compile Include="Main.fs" />
+    <Content Include="index.html" />
+    <Content Include="package.json" />
+    <None Include="clear-elmish-project.sh" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fable.Elmish.Browser" Version="4.0.1" />
     <PackageReference Include="Fable.Elmish.React" Version="4.0.0" />
     <PackageReference Include="Feliz" Version="2.6.0" />
     <PackageReference Include="FsToolkit.ErrorHandling" Version="4.9.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="7.0.400" />
   </ItemGroup>
 </Project>
