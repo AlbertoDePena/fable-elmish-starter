@@ -4,7 +4,14 @@ module Application
 open Elmish
 
 open Feliz
+open Feliz.Router
 open Extensions
+
+[<RequireQualifiedAccess>]
+type Url =
+    | Home
+    | Blog of blogId: int
+    | NotFound
 
 [<RequireQualifiedAccess>]
 type Page =
@@ -15,39 +22,29 @@ type Page =
 type State =
     { Count: int
       RandomDeferred: Deferred<double>
-      CurrentPage: Page
-      CurrentRoute: Router.Route option }
+      CurrentUrl: Url
+      CurrentPage: Page }
 
 type Msg =
     | Increment
     | Decrement
     | GenerateRandomNumberAsync of AsyncMsg<double>
+    | UrlChanged of Url
 
 let random = System.Random()
 
-let updateRoute (route: Router.Route option) state =
-    let state = { state with CurrentRoute = route }
+let init () =
+    { Count = 0
+      RandomDeferred = Deferred.HasNotStartedYet
+      CurrentUrl = Url.NotFound
+      CurrentPage = Page.NotFound },
+    Cmd.none
 
-    match state.CurrentRoute with
-    | None ->
-        { state with
-            CurrentPage = Page.NotFound },
-        Cmd.none
-
-    | Some Router.Route.Home -> { state with CurrentPage = Page.Home }, Cmd.none
-
-    | Some(Router.Route.Blog blogId) ->
-        { state with
-            CurrentPage = Page.Blog blogId },
-        Cmd.none
-
-let init (route: Router.Route option) =
-    updateRoute
-        route
-        { Count = 0
-          RandomDeferred = Deferred.HasNotStartedYet
-          CurrentPage = Page.NotFound
-          CurrentRoute = None }
+let private parseUrl (segments: string list) =
+    match segments with
+    | [] -> Url.Home
+    | [ "blog"; Route.Int id ] -> Url.Blog id
+    | _ -> Url.NotFound
 
 let update (msg: Msg) (state: State) =
     match msg with
@@ -74,6 +71,26 @@ let update (msg: Msg) (state: State) =
         { state with
             RandomDeferred = Deferred.Resolved randomNumber },
         Cmd.none
+
+    | UrlChanged url ->
+        match url with
+        | Url.Home ->
+            { state with
+                CurrentUrl = url
+                CurrentPage = Page.Home },
+            Cmd.none
+
+        | Url.Blog id ->
+            { state with
+                CurrentUrl = url
+                CurrentPage = Page.Blog id },
+            Cmd.none
+
+        | Url.NotFound ->
+            { state with
+                CurrentUrl = url
+                CurrentPage = Page.NotFound },
+            Cmd.none
 
 let render (state: State) (dispatch: Msg -> unit) =
     Html.div [
@@ -134,13 +151,18 @@ let render (state: State) (dispatch: Msg -> unit) =
                 ]
             ]
 
-            Html.p [
-                prop.text (
-                    match state.CurrentPage with
-                    | Page.Home -> "Home"
-                    | Page.Blog blogId -> sprintf "Blog %i" blogId
-                    | Page.NotFound -> "Not Found"
-                )
+            React.router [
+                router.onUrlChanged (parseUrl >> UrlChanged >> dispatch)
+                router.children [
+                    Html.p [
+                        prop.text (
+                            match state.CurrentPage with
+                            | Page.Home -> "Home"
+                            | Page.Blog blogId -> sprintf "Blog %i" blogId
+                            | Page.NotFound -> "Not Found"
+                        )
+                    ]
+                ]
             ]
         ]
     ]
